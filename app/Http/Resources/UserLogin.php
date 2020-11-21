@@ -25,7 +25,7 @@ class UserLogin extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'remember_token' => $this->remember_token,
+            'api_token' => $this->token,
 
 
 

@@ -11,7 +11,7 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens,HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -43,5 +43,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public $table="users";
+    public $table = "users";
+
+    public function revoke_tokens()
+    {
+        if ($this->tokens()) {
+            $this->tokens()->forceDelete();
+        }
+        $token = $this->createToken('TestPassport')->accessToken;
+        return $token;
+    }
 }
