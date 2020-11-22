@@ -26,9 +26,6 @@ class UserLogin extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'api_token' => $this->token,
-
-
-
         ];
     }
 }
