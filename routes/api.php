@@ -15,9 +15,7 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:api')->get('/user/{id}',[UserController::class,'get_profile']);
 
 Route::post('/reg', [UserController::class,'register']);
 Route::post('/login', [UserController::class,'login']);
