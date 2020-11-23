@@ -68,8 +68,7 @@ class UserController extends Controller
     {
         try{
             $user = User::where('id',$id)->first();
-            $token = $user->revoke_tokens();
-            $success_data = ['user' => (new UserLogin($user))->set_token($token)];
+            $success_data = ['user' => (new UserLogin($user))];
             $this->response = $this->show_success($this->response, 'Login successfully!', $success_data);
         }
         catch (\Exception $e) {
