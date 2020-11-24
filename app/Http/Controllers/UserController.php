@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\EditRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserLogin;
@@ -65,11 +66,9 @@ class UserController extends Controller
 
     }
 
-//    public function get_profile($id)
     public function get_profile(Request $request)
     {
         try {
-//            $user = User::where('id',$id)->first();
             $user = Auth::guard('user-api')->user();
             $token = $request->bearertoken();
             $success_data = ['user' => (new UserLogin($user))->set_token($token)];
@@ -77,6 +76,31 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $this->response = $this->show_error($this->response, $e);
         } finally {
+            return response()->json($this->response, 200);
+        }
+    }
+
+
+    public function edit_profile(EditRequest $request)
+    {
+        try {
+            $user = Auth::guard('user-api')->user();
+            $token = $request->bearertoken();
+            $register_data = $request->validated();
+            if(isset($register_data['name']))
+                $user->name = $register_data['name'];
+            if(isset($register_data['email']))
+                $user->email = $register_data['email'];
+            if(isset($register_data['password']))
+                $user->password = bcrypt($register_data['password']);
+            $user->save();
+            $success_data = ['user' => (new UserLogin($user))->set_token($token)];
+            $this->response = $this->show_success($this->response, 'Edit successfully!', $success_data);
+        } 
+        catch (\Exception $e) {
+            $this->response = $this->show_error($this->response, $e);
+        } 
+        finally {
             return response()->json($this->response, 200);
         }
     }
