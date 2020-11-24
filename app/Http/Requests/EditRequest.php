@@ -21,14 +21,14 @@ class EditRequest extends FormRequest
     /**
      *  Validation rules to be applied to the input.
      *
-     *  @return array
+     * @return array
      */
     public function rules()
     {
         return [
-            'name' => 'min:4|max:20|unique:users,name',
-            'email'  =>  'email|unique:users,email',
-            'password'      =>  'min:8|max:32'
+            'name' => 'nullable|min:4|max:20|unique:users,name',
+            'email' => 'nullable|email|unique:users,email',
+            'password' => 'nullable|min:8|max:32'
         ];
     }
 

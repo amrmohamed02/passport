@@ -87,20 +87,15 @@ class UserController extends Controller
             $user = Auth::guard('user-api')->user();
             $token = $request->bearertoken();
             $register_data = $request->validated();
-            if(isset($register_data['name']))
-                $user->name = $register_data['name'];
-            if(isset($register_data['email']))
-                $user->email = $register_data['email'];
-            if(isset($register_data['password']))
-                $user->password = bcrypt($register_data['password']);
+            $user->name = $register_data['name'] ?? $user->name;
+            $user->email = $register_data['email'] ?? $user->email;
+            $user->password = isset($register_data['password']) ? bcrypt($register_data['password']) : $user->password;
             $user->save();
             $success_data = ['user' => (new UserLogin($user))->set_token($token)];
             $this->response = $this->show_success($this->response, 'Edit successfully!', $success_data);
-        } 
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->response = $this->show_error($this->response, $e);
-        } 
-        finally {
+        } finally {
             return response()->json($this->response, 200);
         }
     }
