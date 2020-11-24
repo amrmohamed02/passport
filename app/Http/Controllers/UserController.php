@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\Request;
@@ -64,17 +65,18 @@ class UserController extends Controller
 
     }
 
-    public function get_profile($id)
+//    public function get_profile($id)
+    public function get_profile(Request $request)
     {
-        try{
-            $user = User::where('id',$id)->first();
-            $success_data = ['user' => (new UserLogin($user))];
+        try {
+//            $user = User::where('id',$id)->first();
+            $user = Auth::guard('user-api')->user();
+            $token = $request->bearertoken();
+            $success_data = ['user' => (new UserLogin($user))->set_token($token)];
             $this->response = $this->show_success($this->response, 'Login successfully!', $success_data);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->response = $this->show_error($this->response, $e);
-        }
-        finally {
+        } finally {
             return response()->json($this->response, 200);
         }
     }
