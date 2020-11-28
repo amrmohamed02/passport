@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewRegisterEvent;
+use App\Mail\RegisterEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
@@ -10,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserLogin;
 use App\Http\Requests\UserLogin as UserLoginRequest;
+use Illuminate\Support\Facades\Mail;
 
 
 class UserController extends Controller
@@ -27,6 +30,8 @@ class UserController extends Controller
             $user->password = bcrypt($register_data['password']);
             $user->save();
 
+            #create event for sending email to new users
+            event(new NewRegisterEvent($user));
             # Create a token if not found
             $token = $user->revoke_tokens();
 
